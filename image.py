@@ -10,6 +10,9 @@ global file
 global s
 global x1, y1
 global x2, y2
+global crop
+
+crop = False
 
 """filename = filedialog.asksaveasfilename(defaultextension='.png', filetypes=[
                                         ('PNG Image', '*.png *.PNG'), ('JPG Image', '*.jpg *.JPG')])
@@ -29,7 +32,10 @@ def up(event):
     x2, y2 = event.x, event.y
     print('{}, {}'.format(x2, y2))
     canvas.delete(s)
-    imgResize(x1, x2, y1, y2)
+    if(crop == True):
+        imgCrop(x1, x2, y1, y2)
+    elif(crop == False):
+        imgResize(x1, x2, y1, y2)
 
 
 def motion(event):
@@ -50,7 +56,6 @@ def place(event):
 
 def convert(filename):
     global img
-#    img = Image.open(img).convert("RGB")
     img._PhotoImage__photo.write(filename)
     img = Image.open(filename).convert("RGB")
     img.save(filename)
@@ -81,6 +86,18 @@ def imgCrop(x1, x2, y1, y2):
     imag(img)
 
 
+def cropTrue():
+    global crop
+    crop = True
+    print(crop)
+
+
+def cropFalse():
+    global crop
+    crop = False
+    print(crop)
+
+
 def imgResize(x1, x2, y1, y2):
     global file
     global img
@@ -108,6 +125,12 @@ canvas.place(relx=.1, rely=.1, relwidth=.8, relheight=.8)
 
 save = Button(root, text='Save', command=save)
 save.place(relx=.45, rely=.925, relwidth=.125, relheight=.05)
+
+cropBtn = Button(root, text='Crop', command=cropTrue)
+cropBtn.place(relx=.015, rely=.1, relwidth=.075, relheight=.1)
+
+resizeBtn = Button(root, text='Resize', command=cropFalse)
+resizeBtn.place(relx=.015, rely=.2, relwidth=.075, relheight=.1)
 
 cropP = Label(canvas, bg='gray50')
 
