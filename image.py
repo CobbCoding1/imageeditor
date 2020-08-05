@@ -1,6 +1,6 @@
 from PIL import Image, ImageTk
 import tkinter as tk
-from tkinter import Tk, filedialog, Button, Entry, StringVar, Label, PhotoImage, Canvas, Toplevel, Spinbox, Scale, StringVar, HORIZONTAL, VERTICAL, CENTER
+from tkinter import Tk, colorchooser, filedialog, Button, Entry, StringVar, Label, PhotoImage, Canvas, Toplevel, Spinbox, Scale, StringVar, HORIZONTAL, VERTICAL, CENTER
 
 root = Tk()
 root.geometry('1024x768')
@@ -12,13 +12,13 @@ global x1, y1
 global x2, y2
 global crop
 global draw
+global color
+
+color = ['', 'red']
+print(color)
 
 crop = False
 draw = False
-
-"""filename = filedialog.asksaveasfilename(defaultextension='.png', filetypes=[
-                                        ('PNG Image', '*.png *.PNG'), ('JPG Image', '*.jpg *.JPG')])
-print(filename)"""
 
 
 def save():
@@ -35,10 +35,11 @@ def up(event):
     global draw
     x2, y2 = event.x, event.y
     print('{}, {}'.format(x2, y2))
-    canvas.delete(s)
     if(crop == True and draw != True):
+        canvas.delete(s)
         imgCrop(x1, x2, y1, y2)
     elif(crop == False and draw != True):
+        canvas.delete(s)
         imgResize(x1, x2, y1, y2)
 
 
@@ -46,12 +47,13 @@ def motion(event):
     global x1, y1
     global imgC
     global draw
+    global color
 
     if(draw == True):
         x1, y1 = event.x, event.y
         print('{}, {}'.format(x1, y1))
         paint = canvas.create_rectangle(
-            x1, y1, x1 + size.get(), y1 + size.get(), fill='red', outline='')
+            x1, y1, x1 + size.get(), y1 + size.get(), fill=color[1], outline='')
     else:
         x, y = event.x, event.y
         print('{}, {}'.format(x, y))
@@ -62,12 +64,13 @@ def place(event):
     global s
     global x1, y1
     global draw
+    global color
 
     if(draw == True):
         x1, y1 = event.x, event.y
         print('{}, {}'.format(x1, y1))
-        paint = canvas.create_rectangle(
-            x1, y1, x1 + size.get(), y1 + size.get(), fill='red', outline='')
+        paint = canvas.create_oval(
+            x1, y1, x1 + size.get(), y1 + size.get(), fill=color[1], outline='')
     else:
         x1, y1 = event.x, event.y
         print('{}, {}'.format(x1, y1))
@@ -138,6 +141,11 @@ def imgResize(x1, x2, y1, y2):
     imag(img)
 
 
+def colorSelect():
+    global color
+    color = colorchooser.askcolor()
+
+
 def imag(img):
     global canvas
     print(img)
@@ -154,6 +162,9 @@ uploadBtn.place(relx=.45, rely=.025, relwidth=.125, relheight=.05)
 
 size = Scale(root, from_=1, to=50, orient=HORIZONTAL)
 size.place(relx=.015, rely=.4, relwidth=.075, relheight=.05)
+
+colorBtn = Button(root, text='Choose Color', command=colorSelect)
+colorBtn.place(relx=.015, rely=.45, relwidth=.075, relheight=.05)
 
 canvas = Canvas(bg='light gray')
 canvas.place(relx=.1, rely=.1, relwidth=.8, relheight=.8)
@@ -172,8 +183,8 @@ drawBtn.place(relx=.015, rely=.3, relwidth=.075, relheight=.1)
 
 cropP = Label(canvas, bg='gray50')
 
-#ResizeBtn1 = Button(canvas, text='', bg='gray')
-#ResizeBtn1.place(relx=.975, rely=.0, relwidth=.025, relheight=.04)
+# ResizeBtn1 = Button(canvas, text='', bg='gray')
+# ResizeBtn1.place(relx=.975, rely=.0, relwidth=.025, relheight=.04)
 
 canvas.bind('<Button-1>', place)
 canvas.bind('<B1-Motion>', motion)
